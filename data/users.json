@@ -1,0 +1,57 @@
+{
+  "1375500454397612093": {
+    "coins": 251,
+    "level": 1,
+    "exp": 35,
+    "rod": "Cần Cấp 1",
+    "rods_owned": [
+      "Cần Cấp 1"
+    ],
+    "equipped_bait": null,
+    "equipped_hook": null,
+    "fish_bag": [
+      {
+        "name": "Ca Du 2",
+        "min_cm": 10,
+        "max_cm": 26,
+        "base_price": 43,
+        "image": "images/fishes/map3_common_ca_du_2.png",
+        "map": 3,
+        "length_cm": 19.7
+      },
+      {
+        "name": "Ca Trich",
+        "min_cm": 23,
+        "max_cm": 37,
+        "base_price": 40,
+        "image": "images/fishes/map3_common_ca_trich.png",
+        "map": 3,
+        "length_cm": 32.8
+      },
+      {
+        "name": "Ca Ro",
+        "min_cm": 12,
+        "max_cm": 26,
+        "base_price": 78,
+        "image": "images/fishes/map2_common_ca_ro.png",
+        "map": 2,
+        "length_cm": 13.6
+      },
+      {
+        "name": "Ca Bong 2",
+        "min_cm": 24,
+        "max_cm": 36,
+        "base_price": 43,
+        "image": "images/fishes/map4_common_ca_bong_2.png",
+        "map": 4,
+        "length_cm": 30.2
+      }
+    ],
+    "fish_caught": 7,
+    "fish_sell_count": 3,
+    "map": "map2",
+    "character": "legend_lurer",
+    "quests": [],
+    "progress": {}
+  }
+}

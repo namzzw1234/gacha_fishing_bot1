@@ -1,0 +1,56 @@
+[
+  {
+    "id": "rod_1",
+    "name": "Cần Cấp 1",
+    "price": 1000,
+    "rates": { "common": 85, "rare": 10, "legendary": 5 },
+    "break_chance": 10,
+    "description": "Cần câu đơn giản cho người mới bắt đầu.",
+    "image": "rod_1.jpg"
+  },
+  {
+    "id": "rod_2",
+    "name": "Cần Cấp 2",
+    "price": 2500,
+    "rates": { "common": 80, "rare": 15, "legendary": 5 },
+    "break_chance": 8,
+    "description": "Cần câu nâng cấp, tăng cơ hội bắt cá hiếm.",
+    "image": "rod_2.jpg"
+  },
+  {
+    "id": "rod_3",
+    "name": "Cần Cấp 3",
+    "price": 7500,
+    "rates": { "common": 75, "rare": 20, "legendary": 5 },
+    "break_chance": 7,
+    "description": "Cần chắc chắn hơn, cân bằng hiệu quả.",
+    "image": "rod_3.jpg"
+  },
+  {
+    "id": "rod_4",
+    "name": "Cần Cấp 4",
+    "price": 24000,
+    "rates": { "common": 70, "rare": 25, "legendary": 5 },
+    "break_chance": 6,
+    "description": "Cần chuyên dụng cho dân câu cá dày dạn.",
+    "image": "rod_4.jpg"
+  },
+  {
+    "id": "rod_5",
+    "name": "Cần Cấp 5",
+    "price": 60000,
+    "rates": { "common": 65, "rare": 25, "legendary": 10 },
+    "break_chance": 5,
+    "description": "Cần huyền thoại, có thể bắt được cá truyền thuyết.",
+    "image": "rod_5.jpg"
+  },
+  {
+    "id": "halloween_rod",
+    "name": "🎃 Cần Câu Halloween",
+    "price": 0,
+    "rates": { "common": 20, "rare": 60, "legendary": 20 },
+    "break_chance": 3,
+    "description": "🌕 Một cây cần ma quái chỉ xuất hiện trong lễ hội Halloween.\nTăng cực mạnh tỷ lệ bắt cá hiếm và huyền thoại!",
+    "image": "images/rods/halloween_rod.png"
+  }
+]

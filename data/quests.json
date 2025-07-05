@@ -1,0 +1,67 @@
+[
+  {
+    "id": "catch_5_common",
+    "description": "Câu 5 cá thường",
+    "type": "catch",
+    "rarity": "common",
+    "amount": 5,
+    "reward": {
+      "coins": 500,
+      "exp": 50
+    }
+  },
+  {
+    "id": "catch_3_rare",
+    "description": "Câu 3 cá hiếm",
+    "type": "catch",
+    "rarity": "rare",
+    "amount": 3,
+    "reward": {
+      "coins": 500,
+      "exp": 50
+    }
+  },
+  {
+    "id": "catch_1_legendary",
+    "description": "Câu 1 cá huyền thoại",
+    "type": "catch",
+    "rarity": "legendary",
+    "amount": 1,
+    "reward": {
+      "coins": 500,
+      "exp": 50
+    }
+  },
+  {
+    "id": "sell_10_fish",
+    "description": "Bán 10 con cá bất kỳ",
+    "type": "sell",
+    "amount": 10,
+    "reward": {
+      "coins": 500,
+      "exp": 50
+    }
+  },
+  {
+    "id": "fish_3_times",
+    "description": "Thực hiện câu cá 3 lần",
+    "type": "action",
+    "action": "fish",
+    "amount": 3,
+    "reward": {
+      "coins": 500,
+      "exp": 50
+    }
+  },
+  {
+    "id": "visit_new_map",
+    "description": "Đổi sang 1 bản đồ khác",
+    "type": "action",
+    "action": "change_map",
+    "amount": 1,
+    "reward": {
+      "coins": 500,
+      "exp": 50
+    }
+  }
+]

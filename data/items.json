@@ -1,0 +1,46 @@
+{
+  "bait": [
+    {
+      "id": "bait_common",
+      "name": "Mồi Thường",
+      "type": "bait",
+      "bonus_catch_rate": 5,
+      "price": 200,
+      "image": "images/items/bait_common.png"
+    },
+    {
+      "id": "bait_premium",
+      "name": "Mồi Xịn",
+      "type": "bait",
+      "bonus_catch_rate": 10,
+      "price": 500,
+      "image": "images/items/bait_premium.png"
+    }
+  ],
+  "hook": [
+    {
+      "id": "hook_iron",
+      "name": "Lưỡi Sắt",
+      "type": "hook",
+      "reduce_break_chance": 5,
+      "price": 300,
+      "image": "images/items/hook_iron.png"
+    },
+    {
+      "id": "hook_titan",
+      "name": "Lưỡi Titan",
+      "type": "hook",
+      "reduce_break_chance": 10,
+      "price": 600,
+      "image": "images/items/hook_titan.png"
+    },
+    {
+      "id": "hook_dragon",
+      "name": "Lưỡi Rồng",
+      "type": "hook",
+      "reduce_break_chance": 15,
+      "price": 1200,
+      "image": "images/items/hook_dragon.png"
+    }
+  ]
+}

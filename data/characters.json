@@ -1,0 +1,30 @@
+[
+  {
+    "id": "old_fisher",
+    "name": "Cần Thủ Lão Làng",
+    "description": "Một lão ngư giàu kinh nghiệm, hiểu rõ mọi con sóng và luồng cá.",
+    "skill": "+20% cơ hội gặp cá hiếm",
+    "image": "images/characters/old_fisher.png"
+  },
+  {
+    "id": "shark_hunter",
+    "name": "Kẻ Săn Cá Mập",
+    "description": "Một chiến binh biển cả, chuyên săn lùng cá lớn để bán lấy lời.",
+    "skill": "Cá thường +50% giá trị bán",
+    "image": "images/characters/shark_hunter.png"
+  },
+  {
+    "id": "fast_fisher",
+    "name": "Tay Câu Nhanh",
+    "description": "Nổi tiếng với tốc độ phản xạ thần sầu, không bỏ lỡ con cá nào.",
+    "skill": "Giảm thời gian chờ khi câu cá",
+    "image": "images/characters/fast_fisher.png"
+  },
+  {
+    "id": "legend_lurer",
+    "name": "Nhà Thu Hút Thủy Quái",
+    "description": "Một nhà huyền thuật có khả năng dẫn dụ những sinh vật biển huyền thoại.",
+    "skill": "Tăng cơ hội bắt cá huyền thoại",
+    "image": "images/characters/legend_lurer.png"
+  }
+]

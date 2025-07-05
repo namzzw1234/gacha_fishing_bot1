@@ -1,0 +1,365 @@
+{
+  "common": [
+    {
+      "name": "Ca Chim",
+      "min_cm": 24,
+      "max_cm": 30,
+      "base_price": 51,
+      "image": "images/fishes/map1_common_ca_chim.png",
+      "map": 1
+    },
+    {
+      "name": "Ca Du",
+      "min_cm": 23,
+      "max_cm": 36,
+      "base_price": 95,
+      "image": "images/fishes/map1_common_ca_du.png",
+      "map": 1
+    },
+    {
+      "name": "Ca Bong",
+      "min_cm": 11,
+      "max_cm": 37,
+      "base_price": 62,
+      "image": "images/fishes/map1_common_ca_bong.png",
+      "map": 1
+    },
+    {
+      "name": "Ca Me",
+      "min_cm": 21,
+      "max_cm": 28,
+      "base_price": 75,
+      "image": "images/fishes/map1_common_ca_me.png",
+      "map": 1
+    },
+    {
+      "name": "Ca Loc",
+      "min_cm": 15,
+      "max_cm": 33,
+      "base_price": 63,
+      "image": "images/fishes/map1_common_ca_loc.png",
+      "map": 1
+    },
+    {
+      "name": "Ca Det",
+      "min_cm": 23,
+      "max_cm": 29,
+      "base_price": 49,
+      "image": "images/fishes/map2_common_ca_det.png",
+      "map": 2
+    },
+    {
+      "name": "Ca Com",
+      "min_cm": 15,
+      "max_cm": 34,
+      "base_price": 97,
+      "image": "images/fishes/map2_common_ca_com.png",
+      "map": 2
+    },
+    {
+      "name": "Ca Ro",
+      "min_cm": 12,
+      "max_cm": 26,
+      "base_price": 78,
+      "image": "images/fishes/map2_common_ca_ro.png",
+      "map": 2
+    },
+    {
+      "name": "Ca Dia",
+      "min_cm": 13,
+      "max_cm": 34,
+      "base_price": 38,
+      "image": "images/fishes/map2_common_ca_dia.png",
+      "map": 2
+    },
+    {
+      "name": "Ca Tre",
+      "min_cm": 19,
+      "max_cm": 27,
+      "base_price": 50,
+      "image": "images/fishes/map2_common_ca_tre.png",
+      "map": 2
+    },
+    {
+      "name": "Ca Trich",
+      "min_cm": 23,
+      "max_cm": 37,
+      "base_price": 40,
+      "image": "images/fishes/map3_common_ca_trich.png",
+      "map": 3
+    },
+    {
+      "name": "Ca Bo",
+      "min_cm": 13,
+      "max_cm": 31,
+      "base_price": 68,
+      "image": "images/fishes/map3_common_ca_bo.png",
+      "map": 3
+    },
+    {
+      "name": "Ca Tram",
+      "min_cm": 25,
+      "max_cm": 26,
+      "base_price": 96,
+      "image": "images/fishes/map3_common_ca_tram.png",
+      "map": 3
+    },
+    {
+      "name": "Ca Nuc",
+      "min_cm": 12,
+      "max_cm": 40,
+      "base_price": 62,
+      "image": "images/fishes/map3_common_ca_nuc.png",
+      "map": 3
+    },
+    {
+      "name": "Ca Du 2",
+      "min_cm": 10,
+      "max_cm": 26,
+      "base_price": 43,
+      "image": "images/fishes/map3_common_ca_du_2.png",
+      "map": 3
+    },
+    {
+      "name": "Ca Chim 2",
+      "min_cm": 11,
+      "max_cm": 34,
+      "base_price": 65,
+      "image": "images/fishes/map4_common_ca_chim_2.png",
+      "map": 4
+    },
+    {
+      "name": "Ca Ro 2",
+      "min_cm": 18,
+      "max_cm": 38,
+      "base_price": 59,
+      "image": "images/fishes/map4_common_ca_ro_2.png",
+      "map": 4
+    },
+    {
+      "name": "Ca Tre 2",
+      "min_cm": 15,
+      "max_cm": 36,
+      "base_price": 95,
+      "image": "images/fishes/map4_common_ca_tre_2.png",
+      "map": 4
+    },
+    {
+      "name": "Ca Bong 2",
+      "min_cm": 24,
+      "max_cm": 36,
+      "base_price": 43,
+      "image": "images/fishes/map4_common_ca_bong_2.png",
+      "map": 4
+    },
+    {
+      "name": "Ca Me 2",
+      "min_cm": 25,
+      "max_cm": 30,
+      "base_price": 79,
+      "image": "images/fishes/map4_common_ca_me_2.png",
+      "map": 4
+    },
+    {
+      "name": "Ca Det 2",
+      "min_cm": 14,
+      "max_cm": 30,
+      "base_price": 74,
+      "image": "images/fishes/map5_common_ca_det_2.png",
+      "map": 5
+    },
+    {
+      "name": "Ca Dia 2",
+      "min_cm": 24,
+      "max_cm": 32,
+      "base_price": 85,
+      "image": "images/fishes/map5_common_ca_dia_2.png",
+      "map": 5
+    },
+    {
+      "name": "Ca Bo 2",
+      "min_cm": 25,
+      "max_cm": 32,
+      "base_price": 100,
+      "image": "images/fishes/map5_common_ca_bo_2.png",
+      "map": 5
+    },
+    {
+      "name": "Ca Tram 2",
+      "min_cm": 14,
+      "max_cm": 39,
+      "base_price": 35,
+      "image": "images/fishes/map5_common_ca_tram_2.png",
+      "map": 5
+    }
+  ],
+  "rare": [
+    {
+      "name": "Ca Soc Ngua",
+      "min_cm": 37,
+      "max_cm": 75,
+      "base_price": 310,
+      "image": "images/fishes/map1_rare_ca_soc_ngua.png",
+      "map": 1
+    },
+    {
+      "name": "Ca Hong Van",
+      "min_cm": 42,
+      "max_cm": 64,
+      "base_price": 491,
+      "image": "images/fishes/map1_rare_ca_hong_van.png",
+      "map": 1
+    },
+    {
+      "name": "Ca Trap",
+      "min_cm": 44,
+      "max_cm": 80,
+      "base_price": 486,
+      "image": "images/fishes/map2_rare_ca_trap.png",
+      "map": 2
+    },
+    {
+      "name": "Ca Ngu",
+      "min_cm": 33,
+      "max_cm": 68,
+      "base_price": 412,
+      "image": "images/fishes/map2_rare_ca_ngu.png",
+      "map": 2
+    },
+    {
+      "name": "Ca Vuoc",
+      "min_cm": 50,
+      "max_cm": 69,
+      "base_price": 474,
+      "image": "images/fishes/map2_rare_ca_vuoc.png",
+      "map": 2
+    },
+    {
+      "name": "Ca Mat Quy",
+      "min_cm": 56,
+      "max_cm": 67,
+      "base_price": 471,
+      "image": "images/fishes/map3_rare_ca_mat_quy.png",
+      "map": 3
+    },
+    {
+      "name": "Ca Mu Sao",
+      "min_cm": 49,
+      "max_cm": 61,
+      "base_price": 342,
+      "image": "images/fishes/map3_rare_ca_mu_sao.png",
+      "map": 3
+    },
+    {
+      "name": "Ca Chep Vang",
+      "min_cm": 51,
+      "max_cm": 71,
+      "base_price": 481,
+      "image": "images/fishes/map4_rare_ca_chep_vang.png",
+      "map": 4
+    },
+    {
+      "name": "Ca Hong",
+      "min_cm": 40,
+      "max_cm": 61,
+      "base_price": 338,
+      "image": "images/fishes/map4_rare_ca_hong.png",
+      "map": 4
+    },
+    {
+      "name": "Ca He",
+      "min_cm": 32,
+      "max_cm": 80,
+      "base_price": 421,
+      "image": "images/fishes/map5_rare_ca_he.png",
+      "map": 5
+    }
+  ],
+  "legendary": [
+    {
+      "name": "Ca Rong",
+      "min_cm": 98,
+      "max_cm": 140,
+      "base_price": 1268,
+      "image": "images/fishes/map2_legendary_ca_rong.png",
+      "map": 2
+    },
+    {
+      "name": "Ca Mat Troi",
+      "min_cm": 78,
+      "max_cm": 113,
+      "base_price": 1488,
+      "image": "images/fishes/map3_legendary_ca_mat_troi.png",
+      "map": 3
+    },
+    {
+      "name": "Ca Map Bong Ma",
+      "min_cm": 73,
+      "max_cm": 112,
+      "base_price": 1367,
+      "image": "images/fishes/map4_legendary_ca_map_bong_ma.png",
+      "map": 4
+    },
+    {
+      "name": "Ca Ho Phap",
+      "min_cm": 81,
+      "max_cm": 140,
+      "base_price": 1122,
+      "image": "images/fishes/map4_legendary_ca_ho_phap.png",
+      "map": 4
+    },
+    {
+      "name": "Ca Ky Lan",
+      "min_cm": 74,
+      "max_cm": 124,
+      "base_price": 1420,
+      "image": "images/fishes/map5_legendary_ca_ky_lan.png",
+      "map": 5
+    },
+    {
+      "name": "Ca Long Lan",
+      "min_cm": 79,
+      "max_cm": 126,
+      "base_price": 1090,
+      "image": "images/fishes/map5_legendary_ca_long_lan.png",
+      "map": 5
+    }
+  ],
+  "halloween": [
+    {
+      "name": "C? Bi Ng?",
+      "min_cm": 20,
+      "max_cm": 35,
+      "base_price": 150,
+      "image": "images/fishes/ca_bi_ngo.png"
+    },
+    {
+      "name": "C? Ma",
+      "min_cm": 18,
+      "max_cm": 30,
+      "base_price": 140,
+      "image": "images/fishes/ca_ma.png"
+    },
+    {
+      "name": "C? M?o ?en",
+      "min_cm": 16,
+      "max_cm": 29,
+      "base_price": 160,
+      "image": "images/fishes/ca_meo_den.png"
+    },
+    {
+      "name": "C? D?i",
+      "min_cm": 19,
+      "max_cm": 31,
+      "base_price": 148,
+      "image": "images/fishes/ca_doi.png"
+    },
+    {
+      "name": "C? ??u L?u",
+      "min_cm": 21,
+      "max_cm": 33,
+      "base_price": 152,
+      "image": "images/fishes/ca_dau_lau.png"
+    }
+  ]
+}

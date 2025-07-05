@@ -1,0 +1,579 @@
+import discord
+from discord.ext import commands, tasks
+from discord.ui import View, Button, Select
+import json
+import random
+import asyncio
+import os
+
+# Chỉ cho phép dùng bot trong kênh nhất định
+ALLOWED_CHANNEL_ID = 1389719988117700700
+
+intents = discord.Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix=".", intents=intents)
+
+# ------------------ Load & Save -------------------
+def load_json(file):
+    with open(file, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def save():
+    with open("data/users.json", "w", encoding="utf-8") as f:
+        json.dump(users, f, indent=2, ensure_ascii=False)
+
+users = load_json("data/users.json")
+characters = load_json("data/characters.json")
+rods = load_json("data/rods.json")
+items = load_json("data/items.json")
+maps = load_json("data/maps.json")
+fishes = load_json("data/fishes.json")
+quests = load_json("data/quests.json")
+
+def is_allowed_channel():
+    def predicate(ctx):
+        return ctx.channel.id == ALLOWED_CHANNEL_ID
+    return commands.check(predicate)
+
+def level_exp(level):
+    return 100 + level * 50
+# ------------------- .batdau -------------------
+class CharSelectSingleView(View):
+    def __init__(self, ctx, uid, char):
+        super().__init__(timeout=60)
+        self.ctx = ctx
+        self.uid = uid
+        self.char = char
+
+        self.select_button = Button(label="🎯 Chọn nhân vật này", style=discord.ButtonStyle.success)
+        self.select_button.callback = self.select_callback
+        self.add_item(self.select_button)
+
+    async def interaction_check(self, interaction):
+        return interaction.user.id == self.ctx.author.id
+
+    async def on_timeout(self):
+        try:
+            await self.message.delete()
+        except:
+            pass
+
+    async def select_callback(self, interaction):
+        users[self.uid]["character"] = self.char["id"]
+        save()
+        await interaction.response.send_message(
+            f"✅ Bạn đã chọn nhân vật **{self.char['name']}**! Hãy bắt đầu hành trình với chiếc cần câu tân thủ và khát vọng chinh phục đại dương!", ephemeral=True
+        )
+        try:
+            await interaction.message.delete()
+        except:
+            pass
+        self.stop()
+
+@bot.command()
+@is_allowed_channel()
+async def batdau(ctx):
+    uid = str(ctx.author.id)
+    if uid in users:
+        await ctx.send("⚠️ Bạn đã bắt đầu hành trình rồi! Không thể bắt đầu lại.")
+        return
+
+    users[uid] = {
+        "character": None,
+        "coins": 200,
+        "rod": rods[0]["name"],
+        "equipped_bait": None,
+        "equipped_hook": None,
+        "fish_bag": [],
+        "level": 1,
+        "exp": 0,
+        "fish_caught": 0,
+        "quests": random.sample(quests, 3),
+        "progress": {},
+        "map": maps[0]["id"],
+        "last_catch_time": 0,
+        "fish_count_by_rarity": {"common":0,"rare":0,"legendary":0},
+        "fish_sell_count": 0,
+        "fishing_actions": 0,
+        "map_changes": 0,
+        "bait_inventory": {},
+        "hook_inventory": {}
+    }
+    save()
+
+    for char in characters:
+        embed = discord.Embed(
+            title=f"🎮 Nhân vật: {char['name']}",
+            description=f"{char['description']}\n\n💬 Tiểu sử: {char.get('bio', 'Chưa có tiểu sử')}\n\n💬 Thoại: {char.get('dialogue', '...')}",
+            color=0x00ffcc
+        )
+        file = discord.File(char["image"], filename="char.png")
+        embed.set_thumbnail(url="attachment://char.png")
+
+        view = CharSelectSingleView(ctx, uid, char)
+        message = await ctx.send(embed=embed, file=file, view=view)
+        view.message = message
+        await asyncio.sleep(0.5)
+# ------------------- .cau -------------------
+cau_cooldowns = {}
+
+@bot.command()
+@is_allowed_channel()
+async def cau(ctx):
+    uid = str(ctx.author.id)
+    if uid not in users:
+        await ctx.send("🎣 Bạn chưa bắt đầu chơi. Dùng `.batdau` để bắt đầu!")
+        return
+
+    now = asyncio.get_event_loop().time()
+    if uid in cau_cooldowns and now - cau_cooldowns[uid] < 15:
+        await ctx.send("🕒 Bạn cần nghỉ ngơi một chút trước khi câu tiếp!")
+        return
+
+    cau_cooldowns[uid] = now
+
+    user = users[uid]
+
+    gif_path = "images/animations/luffy_fishing.gif"
+    if os.path.exists(gif_path):
+        file = discord.File(gif_path, filename="fishing.gif")
+        await ctx.send("🎣 Bạn bắt đầu thả cần câu xuống biển...", file=file)
+    else:
+        await ctx.send("🎣 Bạn bắt đầu thả cần câu xuống biển...")
+
+    await asyncio.sleep(random.uniform(4, 8))
+
+    current_map = next((m for m in maps if m["id"] == user["map"]), maps[0])
+    rod = next((r for r in rods if r["name"] == user["rod"]), rods[0])
+
+    def combined_rate(r):
+        return min(100, rod["rates"].get(r, 0) + current_map["rarity_rates"].get(r, 0))
+
+    rarities = ["common", "rare", "legendary"]
+    weights = [combined_rate(r) for r in rarities]
+    rarity = random.choices(rarities, weights=weights, k=1)[0]
+
+    possible = [f for f in fishes[rarity] if str(f.get("map", "")) == str(current_map["id"])]
+    if not possible:
+        possible = fishes["common"]
+
+    fish = random.choice(possible)
+
+    if len(user["fish_bag"]) >= 20:
+        await ctx.send("📦 Balo cá đã đầy! Hãy bán bớt trước khi tiếp tục câu.")
+        return
+
+    fish_data = {
+        "name": fish["name"],
+        "rarity": rarity,
+        "length_cm": random.randint(fish["min_cm"], fish["max_cm"]),
+        "base_price": fish["base_price"],
+        "image": fish["image"]
+    }
+
+    user["fish_bag"].append(fish_data)
+    user["fish_caught"] += 1
+
+    gained_exp = 10 + {"common": 0, "rare": 5, "legendary": 10}[rarity]
+    user["exp"] += gained_exp
+    leveled_up = False
+    while user["exp"] >= level_exp(user["level"]):
+        user["exp"] -= level_exp(user["level"])
+        user["level"] += 1
+        leveled_up = True
+
+    save()
+
+    image_path = fish["image"]
+
+    embed = discord.Embed(
+        title=f"🐟 Bạn đã câu được: {fish['name']}",
+        description=f"Độ hiếm: {rarity}\nChiều dài: {fish_data['length_cm']} cm\nGiá: {fish_data['base_price']} xu\nEXP nhận: {gained_exp}",
+        color=0x00ccff
+    )
+    embed.set_image(url="attachment://fish.png")
+    file = discord.File(image_path, filename="fish.png")
+    await ctx.send(embed=embed, file=file)
+
+    if leveled_up:
+        await ctx.send(f"🏅 **{ctx.author.display_name}** đã lên cấp **{user['level']}**! Hành trình chinh phục đại dương ngày càng hấp dẫn!")
+        
+# ------------------- .shop -------------------
+class ShopView(View):
+    def __init__(self, ctx, uid):
+        super().__init__(timeout=60)
+        self.ctx = ctx
+        self.uid = uid
+        self.page = 0
+        self.categories = ["Cần câu", "Mồi câu", "Lưỡi câu"]
+        self.selected_item = None
+
+        self.select = Select(placeholder="Chọn món để mua...", options=self.make_options())
+        self.select.callback = self.select_callback
+        self.add_item(self.select)
+
+        self.prev_button = Button(label="⏮️ Trước", style=discord.ButtonStyle.secondary)
+        self.next_button = Button(label="⏭️ Sau", style=discord.ButtonStyle.secondary)
+        self.buy_button = Button(label="🛒 Mua", style=discord.ButtonStyle.green)
+        self.close_button = Button(label="❌ Đóng", style=discord.ButtonStyle.danger)
+
+        self.prev_button.callback = self.prev_page
+        self.next_button.callback = self.next_page
+        self.buy_button.callback = self.buy_item
+        self.close_button.callback = self.close_shop
+
+        self.add_item(self.prev_button)
+        self.add_item(self.buy_button)
+        self.add_item(self.next_button)
+        self.add_item(self.close_button)
+
+    def make_options(self):
+        options = []
+        for it in self.get_items():
+            options.append(discord.SelectOption(label=it["name"], description=f"Giá: {it['price']} xu", value=it["id"]))
+        return options
+
+    def get_items(self):
+        if self.page == 0:
+            return rods
+        elif self.page == 1:
+            return items["bait"]
+        else:
+            return items["hook"]
+
+    def get_embed(self):
+        embed = discord.Embed(title=f"🛍️ Cửa hàng - {self.categories[self.page]}", color=0x00ccff)
+        for it in self.get_items():
+            embed.add_field(name=it["name"], value=f"Giá: {it['price']} xu", inline=False)
+        embed.set_footer(text="Dùng nút để đổi danh mục và mua. Chọn món muốn mua ở menu phía trên.")
+        return embed
+
+    async def prev_page(self, interaction):
+        if interaction.user.id != self.ctx.author.id:
+            return
+        self.page = (self.page - 1) % 3
+        self.select.options = self.make_options()
+        self.selected_item = None
+        await interaction.response.edit_message(embed=self.get_embed(), view=self)
+
+    async def next_page(self, interaction):
+        if interaction.user.id != self.ctx.author.id:
+            return
+        self.page = (self.page + 1) % 3
+        self.select.options = self.make_options()
+        self.selected_item = None
+        await interaction.response.edit_message(embed=self.get_embed(), view=self)
+
+    async def select_callback(self, interaction):
+        if interaction.user.id != self.ctx.author.id:
+            return
+        self.selected_item = interaction.data["values"][0]
+        await interaction.response.send_message(f"✅ Đã chọn **{self.selected_item}**!", ephemeral=True)
+
+    async def buy_item(self, interaction):
+        if interaction.user.id != self.ctx.author.id:
+            return
+        if not self.selected_item:
+            await interaction.response.send_message("⚠️ Bạn chưa chọn món nào!", ephemeral=True)
+            return
+
+        user = users[self.uid]
+        item = next((i for i in self.get_items() if i["id"] == self.selected_item), None)
+        if not item or user["coins"] < item["price"]:
+            await interaction.response.send_message("❌ Không thể mua món này!", ephemeral=True)
+            return
+
+        user["coins"] -= item["price"]
+        if self.page == 0:
+            user["rod"] = item["name"]
+        elif self.page == 1:
+            user["bait_inventory"][item["id"]] = user["bait_inventory"].get(item["id"], 0) + 1
+        else:
+            user["hook_inventory"][item["id"]] = user["hook_inventory"].get(item["id"], 0) + 1
+        save()
+        await interaction.response.send_message(f"🛒 Mua thành công **{item['name']}**!", ephemeral=True)
+
+    async def close_shop(self, interaction):
+        if interaction.user.id != self.ctx.author.id:
+            return
+        await interaction.message.delete()
+
+@bot.command()
+@is_allowed_channel()
+async def shop(ctx):
+    uid = str(ctx.author.id)
+    if uid not in users:
+        await ctx.send("🛑 Bạn chưa bắt đầu chơi. Dùng `.batdau` trước nhé!")
+        return
+    view = ShopView(ctx, uid)
+    await ctx.send(embed=view.get_embed(), view=view)
+    
+    # ------------------- .balo -------------------
+@bot.command()
+@is_allowed_channel()
+async def balo(ctx):
+    uid = str(ctx.author.id)
+    if uid not in users:
+        await ctx.send("⚠️ Bạn chưa bắt đầu chơi. Dùng `.batdau` trước nhé!")
+        return
+
+    user = users[uid]
+    if not user["fish_bag"]:
+        await ctx.send("📭 Balo bạn đang trống rỗng...")
+        return
+
+    embed = discord.Embed(title=f"🎒 Balo cá của {ctx.author.display_name}", color=0x00ccff)
+    for i, fish in enumerate(user["fish_bag"], 1):
+        embed.add_field(
+            name=f"{i}. {fish['name']} ({fish['rarity']})",
+            value=f"📏 {fish['length_cm']} cm | 💰 {fish['base_price']} xu",
+            inline=False
+        )
+    await ctx.send(embed=embed)
+    # ------------------- .nhiemvu -------------------
+class NhiemVuView(View):
+    def __init__(self, ctx, uid):
+        super().__init__(timeout=60)
+        self.ctx = ctx
+        self.uid = uid
+        self.user = users[uid]
+        self.quests = self.user.get("quests", [])
+        self.progress = self.user.get("progress", {})
+        self.buttons = []
+
+        for q in self.quests:
+            prog = self.progress.get(q["id"], 0)
+            done = prog >= q["amount"]
+            claimed_key = f"claimed_{q['id']}"
+            claimed = self.user.get(claimed_key, False)
+
+            if done and not claimed:
+                btn = Button(label=f"🎁 Nhận: {q['description'][:10]}...", style=discord.ButtonStyle.green)
+                btn.callback = self.make_callback(q)
+                self.add_item(btn)
+
+    def make_callback(self, quest):
+        async def callback(interaction):
+            if interaction.user.id != self.ctx.author.id:
+                await interaction.response.send_message("⚠️ Không phải phiên của bạn!", ephemeral=True)
+                return
+
+            claimed_key = f"claimed_{quest['id']}"
+            if self.user.get(claimed_key, False):
+                await interaction.response.send_message("🎁 Bạn đã nhận thưởng rồi!", ephemeral=True)
+                return
+
+            self.user["coins"] += quest["reward"]["coins"]
+            self.user["exp"] += quest["reward"]["exp"]
+            self.user[claimed_key] = True
+            save()
+
+            await interaction.response.send_message(f"✅ Bạn đã nhận **{quest['reward']['coins']} xu** và **{quest['reward']['exp']} EXP**!", ephemeral=True)
+        return callback
+
+@bot.command()
+@is_allowed_channel()
+async def nhiemvu(ctx):
+    uid = str(ctx.author.id)
+    if uid not in users:
+        await ctx.send("⚠️ Hãy bắt đầu hành trình với `.batdau` trước đã!")
+        return
+
+    user = users[uid]
+    if "quests" not in user or "progress" not in user:
+        user["quests"] = random.sample(quests, 3)
+        user["progress"] = {}
+        save()
+
+    embed = discord.Embed(title="📋 Nhiệm vụ hằng ngày", color=0xffcc00)
+    for q in user["quests"]:
+        prog = user["progress"].get(q["id"], 0)
+        done = prog >= q["amount"]
+        claimed_key = f"claimed_{q['id']}"
+        claimed = user.get(claimed_key, False)
+
+        status = "✅ Đã nhận thưởng" if claimed else ("🎯 Hoàn thành! Nhấn nhận!" if done else f"{prog}/{q['amount']}")
+        embed.add_field(
+            name=f"🧭 {q['description']}",
+            value=f"Tiến độ: {status}\n🎁 Thưởng: {q['reward']['coins']}💰 + {q['reward']['exp']} EXP",
+            inline=False
+        )
+
+    view = NhiemVuView(ctx, uid)
+    await ctx.send(embed=embed, view=view)
+    
+    # ------------------- .top -------------------
+@bot.command()
+@is_allowed_channel()
+async def top(ctx):
+    top_users = sorted(users.items(), key=lambda x: x[1].get("exp", 0), reverse=True)[:10]
+    embed = discord.Embed(title="🏆 Bảng xếp hạng EXP", color=0xff9900)
+    for i, (uid, data) in enumerate(top_users, 1):
+        try:
+            member = await bot.fetch_user(int(uid))
+            name = member.display_name
+        except:
+            name = f"Người chơi {uid}"
+        embed.add_field(name=f"#{i} - {name}", value=f"Level {data['level']} | {data['exp']} EXP", inline=False)
+    await ctx.send(embed=embed)
+  @bot.command()
+@is_allowed_channel()
+async def map(ctx):
+    uid = str(ctx.author.id)
+    if uid not in users:
+        await ctx.send("⚠️ Bạn chưa bắt đầu chơi. Dùng `.batdau` trước nhé!")
+        return
+
+    user = users[uid]
+    level = user.get("level", 1)
+
+    class MapSelectView(View):
+        def __init__(self):
+            super().__init__(timeout=60)
+            self.select = Select(placeholder="🌍 Chọn map muốn đến", options=self.make_options())
+            self.select.callback = self.select_callback
+            self.add_item(self.select)
+
+        def make_options(self):
+            options = []
+            for m in maps:
+                min_level = m.get("min_level", 1)
+                label = f"{m['name']} (Cấp {min_level}+)"
+                desc = m.get("description", "")
+                disabled = level < min_level
+                options.append(discord.SelectOption(
+                    label=label,
+                    description=desc,
+                    value=m["id"],
+                    default=(user["map"] == m["id"]),
+                    emoji="🔒" if disabled else "🌴"
+                ))
+            return options
+
+        async def select_callback(self, interaction):
+            if interaction.user.id != ctx.author.id:
+                return
+            chosen_map = interaction.data["values"][0]
+            chosen = next((m for m in maps if m["id"] == chosen_map), None)
+            if not chosen:
+                await interaction.response.send_message("❌ Map không tồn tại.", ephemeral=True)
+                return
+
+            min_level = chosen.get("min_level", 1)
+            if level < min_level:
+                await interaction.response.send_message(f"🔒 Bạn cần đạt cấp {min_level} để vào map này!", ephemeral=True)
+                return
+
+            user["map"] = chosen_map
+            save()
+            await interaction.response.send_message(f"✅ Bạn đã đến **{chosen['name']}**!", ephemeral=True)
+
+    embed = discord.Embed(title="🗺️ Danh sách bản đồ", color=0x1abc9c)
+    for m in maps:
+        min_level = m.get("min_level", 1)
+        status = "🔒 Cần cấp " + str(min_level) if level < min_level else "✅ Có thể vào"
+        embed.add_field(name=m["name"], value=f"{m['description']}\n{status}", inline=False)
+
+    view = MapSelectView()
+    await ctx.send(embed=embed, view=view)
+    
+    # ------------------- .hoso -------------------
+@bot.command()
+@is_allowed_channel()
+async def hoso(ctx):
+    uid = str(ctx.author.id)
+    if uid not in users:
+        await ctx.send("🚫 Bạn chưa bắt đầu. Dùng `.batdau` để bắt đầu!")
+        return
+    user = users[uid]
+    char = next((c for c in characters if c["id"] == user["character"]), None)
+
+    embed = discord.Embed(title=f"📜 Hồ sơ của {ctx.author.display_name}", color=0x66ccff)
+    embed.add_field(name="🔰 Nhân vật", value=char["name"] if char else "???", inline=True)
+    embed.add_field(name="🏅 Level", value=f"{user['level']} ({user['exp']}/{level_exp(user['level'])})", inline=True)
+    embed.add_field(name="💰 Xu", value=f"{user['coins']}", inline=True)
+    embed.add_field(name="🎣 Cần câu", value=user.get("rod", "Không"), inline=True)
+    embed.add_field(name="🪱 Mồi", value=user.get("equipped_bait") or "Không", inline=True)
+    embed.add_field(name="🪝 Lưỡi câu", value=user.get("equipped_hook") or "Không", inline=True)
+    embed.add_field(name="🐟 Cá đã câu", value=user.get("fish_caught", 0), inline=False)
+
+    if char:
+        try:
+            file = discord.File(char["image"], filename="char.png")
+            embed.set_thumbnail(url="attachment://char.png")
+            await ctx.send(embed=embed, file=file)
+        except:
+            await ctx.send(embed=embed)
+    else:
+        await ctx.send(embed=embed)
+        # ------------------- .trangbi -------------------
+class TrangBiView(View):
+    def __init__(self, ctx, uid):
+        super().__init__(timeout=60)
+        self.ctx = ctx
+        self.uid = uid
+        self.user = users[uid]
+
+        bait_options = [
+            discord.SelectOption(label=items["bait"][i]["name"], value=items["bait"][i]["id"])
+            for i in range(len(items["bait"]))
+            if self.user["bait_inventory"].get(items["bait"][i]["id"], 0) > 0
+        ]
+        hook_options = [
+            discord.SelectOption(label=items["hook"][i]["name"], value=items["hook"][i]["id"])
+            for i in range(len(items["hook"]))
+            if self.user["hook_inventory"].get(items["hook"][i]["id"], 0) > 0
+        ]
+
+        self.bait_select = Select(placeholder="🎯 Chọn mồi để trang bị", options=bait_options, row=0)
+        self.hook_select = Select(placeholder="🪝 Chọn lưỡi câu để trang bị", options=hook_options, row=1)
+
+        self.bait_select.callback = self.select_bait
+        self.hook_select.callback = self.select_hook
+
+        self.add_item(self.bait_select)
+        self.add_item(self.hook_select)
+
+    async def interaction_check(self, interaction):
+        return interaction.user.id == self.ctx.author.id
+
+    async def select_bait(self, interaction):
+        bait_id = interaction.data["values"][0]
+        self.user["equipped_bait"] = bait_id
+        save()
+        bait_name = next((b["name"] for b in items["bait"] if b["id"] == bait_id), bait_id)
+        await interaction.response.send_message(f"🪱 Đã trang bị mồi: **{bait_name}**", ephemeral=True)
+
+    async def select_hook(self, interaction):
+        hook_id = interaction.data["values"][0]
+        self.user["equipped_hook"] = hook_id
+        save()
+        hook_name = next((h["name"] for h in items["hook"] if h["id"] == hook_id), hook_id)
+        await interaction.response.send_message(f"🪝 Đã trang bị lưỡi câu: **{hook_name}**", ephemeral=True)
+
+@bot.command()
+@is_allowed_channel()
+async def trangbi(ctx):
+    uid = str(ctx.author.id)
+    if uid not in users:
+        await ctx.send("⚠️ Bạn chưa bắt đầu chơi. Dùng `.batdau` trước nhé!")
+        return
+
+    view = TrangBiView(ctx, uid)
+    await ctx.send("🎒 Hãy chọn mồi và lưỡi câu muốn trang bị:", view=view)
+    
+        
+    # ------------------- Main -------------------
+@bot.event
+async def on_ready():
+    print(f"🤖 Bot đã đăng nhập thành công với tên: {bot.user}!")
+    print("🌊 Game câu cá đã sẵn sàng phục vụ các cần thủ!")
+
+if __name__ == "__main__":
+    # Nhập token bot Discord của bạn tại đây
+    token = "NHẬP_TOKEN_TẠI_ĐÂY"  # <-- Thay bằng token thật của bạn
+    if not token or token.strip() == "NHẬP_TOKEN_TẠI_ĐÂY":
+        print("⚠️ Vui lòng nhập token bot Discord của bạn trong file bot.py!")
+    else:
+        bot.run(token)
+        

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "map1",
+    "name": "Đảo Tân Thủ",
+    "description": "Đảo an toàn cho người mới, cá nhiều và dễ câu.",
+    "min_level": 1,
+    "exp_bonus": 0,
+    "rarity_rates": { "common": 90, "rare": 10, "legendary": 0 },
+    "image": "images/maps/map1.png"
+  },
+  {
+    "id": "map2",
+    "name": "Hồ Kỳ Lạ",
+    "description": "Nơi nước trong và cá quý hiếm xuất hiện.",
+    "min_level": 3,
+    "exp_bonus": 5,
+    "rarity_rates": { "common": 80, "rare": 15, "legendary": 5 },
+    "image": "images/maps/map2.png"
+  },
+  {
+    "id": "map3",
+    "name": "Sông Bóng Đêm",
+    "description": "Dòng sông tối tăm, cá hiếm và huyền thoại xuất hiện nhiều.",
+    "min_level": 5,
+    "exp_bonus": 10,
+    "rarity_rates": { "common": 70, "rare": 20, "legendary": 10 },
+    "image": "images/maps/map3.png"
+  },
+  {
+    "id": "map4",
+    "name": "Hang Đại Ngàn",
+    "description": "Hang động rộng lớn với nhiều loại cá quý hiếm.",
+    "min_level": 10,
+    "exp_bonus": 15,
+    "rarity_rates": { "common": 60, "rare": 25, "legendary": 15 },
+    "image": "images/maps/map4.png"
+  },
+  {
+    "id": "map5",
+    "name": "Vực Cấm",
+    "description": "Vực sâu đầy bí ẩn, chỉ dành cho những thợ câu chuyên nghiệp.",
+    "min_level": 20,
+    "exp_bonus": 20,
+    "rarity_rates": { "common": 50, "rare": 30, "legendary": 20 },
+    "image": "images/maps/map5.png"
+  }
+]
